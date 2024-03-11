@@ -2,7 +2,7 @@
 package funciones;
 
 /**
- *
+ * 
  * @author pamel
  */
 public class Arithmetic{ 

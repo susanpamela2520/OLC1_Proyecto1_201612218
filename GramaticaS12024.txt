@@ -1,0 +1,177 @@
+
+
+parser code 
+{:
+    public String resultado = ""; 
+
+    public void syntax_error(Symbol s)
+    {
+            System.err.println("Error Sintactico: no se espera "+ s.value + " - Fila: " + s.right + " - Columna: " + s.left + ". Recuperado" );
+    }
+
+    public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception
+    {
+            System.err.println("Error Sintactico: "+ s.value + " - Fila: " + s.right + " - Columna: " + s.left + ". Sin recuperacion." );
+    }
+
+:}
+
+
+
+{:  :}
+
+
+
+terminal String EXCL, PAR_DERECHO, PAR_IZQUIERDO, PYC;
+terminal String ENTERO, CADENA, ID, DECIMAL;
+terminal String COMA, IGUAL;
+terminal String VARIABLE, DOUBLEVARIABLE, DOSP, MENORQ, END, GUION, PROGRAM, ENDPROGRAM, MAYORQ; 
+terminal String MAS, CHARVAR, CORIZQ, CORDER, ARROBA, IDARROBA;
+terminal String SUMA, RESTA, MULTIPLICACION, DIVISION, MOD;
+terminal String MEDIA, MEDIANA, MODA, VARIANZA, MAX, MIN, PRINT, CONSOLE, COLUMN;
+
+non terminal inicio;
+non terminal listainstr,  listaValores;
+non terminal instruccion, expresion, operaciones, funciones;
+non terminal printN, variable, valor, imp, arrays;
+
+precedence left MAS;
+
+start with inicio; 
+
+
+
+
+<inicio> ::= PROGRAM <listainstr> ENDPROGRAM
+;
+
+<listainstr> ::= <listainstr> <instruccion>
+    | <instruccion>
+;
+
+<instruccion> ::= <printN>
+    | <variable>
+    |<funciones>
+    | <error> PYC
+;
+
+
+
+<printN> ::= CONSOLE DOSP DOSP PRINT IGUAL <imp> 
+          |CONSOLE DOSP DOSP COLUMN IGUAL <expresion>
+
+
+<variable> ::= VARIABLE DOSP DOUBLEVARIABLE DOSP DOSP  ID:<variable> MENORQ GUION <expresion>     
+    
+    | VARIABLE DOSP CHARVAR CORIZQ CORDER DOSP DOSP ID:<variable> MENORQ GUION expresion
+
+    | ARROBA DOSP DOUBLEVARIABLE DOSP DOSP IDARROBA:<variable> MENORQ GUION CORIZQ <listaValores>:
+
+    | ARROBA DOSP DOUBLEVARIABLE DOSP DOSP IDARROBA:<variable> MENORQ GUION  <expresion>
+
+    | ARROBA DOSP CHARVAR CORIZQ CORDER DOSP DOSP IDARROBA:<variable> MENORQ GUION CORIZQ <listaValores>
+
+    | ARROBA DOSP CHARVAR CORIZQ CORDER DOSP DOSP IDARROBA:<variable> MENORQ GUION  <expresion>
+
+    | VARIABLE DOSP DOUBLEVARIABLE DOSP DOSP ID:<variable> MENORQ GUION <operaciones>
+
+    | VARIABLE DOSP DOUBLEVARIABLE DOSP DOSP ID:<variable> MENORQ GUION <funciones>
+
+
+<funciones> ::= MEDIA PAR_IZQUIERDO CORIZQ <listaValores>
+            | MEDIANA PAR_IZQUIERDO CORIZQ <listaValores>
+            | MODA PAR_IZQUIERDO CORIZQ <listaValores>
+            | VARIANZA PAR_IZQUIERDO CORIZQ <listaValores>
+            | MAX PAR_IZQUIERDO CORIZQ <listaValores>
+            | MIN PAR_IZQUIERDO CORIZQ <listaValores>
+            | MEDIA PAR_IZQUIERDO  <expresion>
+            | MEDIANA PAR_IZQUIERDO  <expresion>
+            | MODA PAR_IZQUIERDO  <expresion>
+            | VARIANZA PAR_IZQUIERDO  <expresion>
+            | MAX PAR_IZQUIERDO  <expresion>
+            | MIN PAR_IZQUIERDO  <expresion>
+
+
+<listaValores> ::=  <expresion>
+    
+    | <operaciones>
+    | <funciones>
+
+    | <expresion>
+
+    | <operaciones>
+
+    | <funciones>
+
+
+
+/
+    <arrays>::= IDARROBA
+             |CORIZQ <listaValores>        
+;
+
+
+
+
+<expresion> ::= ENTERO:<val>  
+        | CADENA
+        | DECIMAL        
+	| ID
+        | IDARROBA           
+;
+
+
+
+
+ 
+
+<operaciones> ::=SUMA PAR_IZQUIERDO <operaciones>
+            | RESTA PAR_IZQUIERDO <operaciones>
+            | MULTIPLICACION PAR_IZQUIERDO <operaciones>
+            | DIVISION PAR_IZQUIERDO <operaciones>
+            | MOD PAR_IZQUIERDO <operaciones>
+            | SUMA PAR_IZQUIERDO <valor>
+            | RESTA PAR_IZQUIERDO <valor>
+            | MULTIPLICACION PAR_IZQUIERDO <valor>
+            | DIVISION PAR_IZQUIERDO <valor>
+            | MOD PAR_IZQUIERDO <valor>            
+            | RESTA PAR_IZQUIERDO <operaciones>
+            | MULTIPLICACION PAR_IZQUIERDO <operaciones>
+            | DIVISION PAR_IZQUIERDO <operaciones>
+            | MOD PAR_IZQUIERDO <operaciones>
+            | SUMA PAR_IZQUIERDO <valor>
+            | RESTA PAR_IZQUIERDO <valor>   
+            | MULTIPLICACION PAR_IZQUIERDO <valor>
+            | DIVISION PAR_IZQUIERDO <valor>
+            | MOD PAR_IZQUIERDO <valor>
+
+
+<valor> ::=ENTERO
+        | ID
+        |<funciones>
+
+<imp> ::= ENTERO
+
+
+        |CADENA
+
+
+        | ID
+
+        
+
+        |<funciones>        
+
+	|<operaciones>
+
+        |ENTERO
+
+        |CADENA
+
+
+        | ID
+
+        |<funciones>:
+
+        |<operaciones>
+;

@@ -4,7 +4,6 @@
  */
 package Principal;
 
-import DATA_analisis.*;
 import Tokens.Errores;
 import Tokens.Token;
 import DATA_analisis.sintactico;
@@ -12,6 +11,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import DATA_analisis.*;
 
 
 /**

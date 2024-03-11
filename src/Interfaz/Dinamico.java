@@ -12,8 +12,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class Dinamico extends JFrame {
- 
-     private JTabbedPane tabbedPane;
+    private JTabbedPane tabbedPane;
 
     public Dinamico() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

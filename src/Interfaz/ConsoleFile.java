@@ -12,13 +12,14 @@ import javax.swing.JTextArea;
  */
 public class ConsoleFile {
     
-    private static JTextArea consola;
+    private static JTextArea Consola;
 
     public static void setConsola(JTextArea consolaInstance) {
-        consola = consolaInstance;
+        Consola = consolaInstance;
     }
 
     public static JTextArea getConsola() {
-        return consola;
+        return Consola;
     }
+    
 }

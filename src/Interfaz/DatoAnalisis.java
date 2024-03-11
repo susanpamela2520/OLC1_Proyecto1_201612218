@@ -36,6 +36,7 @@ public class DatoAnalisis {
                     String contenido = textArea.getText();
                     ejecuta.analizar(contenido); 
                     //resultadoTextArea.setText("Hola mundo el analisis fue completo");
+
                 }
             }
         }

@@ -2,13 +2,13 @@
 
 package Tokens;
 
-/**
+/** 
  *
  * @author pamel
  */
 public class Errores {
     
-     private String lexema;
+    private String lexema;
     private int fila;
     private int columna;
 
@@ -17,6 +17,7 @@ public class Errores {
         this.fila = fila;
         this.columna = columna;
     }
+    
 
     public String getLexema() {
         return lexema;

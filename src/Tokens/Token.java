@@ -1,7 +1,7 @@
 
 package Tokens;
 
-/**
+/** 
  *
  * @author pamel
  */
@@ -17,8 +17,7 @@ public class Token {
         this.columna = columna;
     }
 
-    // Métodos getter para acceder a los atributos
-
+ 
     public String getToken() {
         return token;
     }

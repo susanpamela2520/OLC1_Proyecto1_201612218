@@ -1,6 +1,6 @@
 
 package funciones;
-
+ 
 //Archivo utilizado para guardar los estados de los archivos en toda la interfaz.
 /**
  *
