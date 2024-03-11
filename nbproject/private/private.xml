@@ -3,9 +3,24 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/C:/Users/pamel/OneDrive/Documentos/NetBeansProjects/OLC1_Proyecto1_201612218_ant/src/funciones/Entradas.java</file>
             <file>file:/C:/Users/pamel/OneDrive/Documentos/NetBeansProjects/OLC1_Proyecto1_201612218_ant/src/Proyecto/interfaz.java</file>
+            <file>file:/C:/Users/pamel/OneDrive/Documentos/NetBeansProjects/OLC1_Proyecto1_201612218_ant/src/DATA_analisis/Lexer.java</file>
+            <file>file:/C:/Users/pamel/OneDrive/Documentos/NetBeansProjects/OLC1_Proyecto1_201612218_ant/src/Principal/Exe.java</file>
+            <file>file:/C:/Users/pamel/OneDrive/Documentos/NetBeansProjects/OLC1_Proyecto1_201612218_ant/src/Interfaz/Panel.java</file>
+            <file>file:/C:/Users/pamel/OneDrive/Documentos/NetBeansProjects/OLC1_Proyecto1_201612218_ant/src/Tokens/Errores.java</file>
+            <file>file:/C:/Users/pamel/OneDrive/Documentos/NetBeansProjects/OLC1_Proyecto1_201612218_ant/src/Interfaz/windowsFile.java</file>
             <file>file:/C:/Users/pamel/OneDrive/Documentos/NetBeansProjects/OLC1_Proyecto1_201612218_ant/src/DATA_analisis/lexico.jflex</file>
             <file>file:/C:/Users/pamel/OneDrive/Documentos/NetBeansProjects/OLC1_Proyecto1_201612218_ant/src/DATA_analisis/sintactico.cup</file>
+            <file>file:/C:/Users/pamel/OneDrive/Documentos/NetBeansProjects/OLC1_Proyecto1_201612218_ant/src/funciones/Ejecucion.java</file>
+            <file>file:/C:/Users/pamel/OneDrive/Documentos/NetBeansProjects/OLC1_Proyecto1_201612218_ant/src/funciones/Arithmetic.java</file>
+            <file>file:/C:/Users/pamel/OneDrive/Documentos/NetBeansProjects/OLC1_Proyecto1_201612218_ant/src/funciones/EstadoArchivos.java</file>
+            <file>file:/C:/Users/pamel/OneDrive/Documentos/NetBeansProjects/OLC1_Proyecto1_201612218_ant/src/DATA_analisis/sintactico.java</file>
+            <file>file:/C:/Users/pamel/OneDrive/Documentos/NetBeansProjects/OLC1_Proyecto1_201612218_ant/src/Interfaz/DatoAnalisis.java</file>
+            <file>file:/C:/Users/pamel/OneDrive/Documentos/NetBeansProjects/OLC1_Proyecto1_201612218_ant/src/Interfaz/ConsoleFile.java</file>
+            <file>file:/C:/Users/pamel/OneDrive/Documentos/NetBeansProjects/OLC1_Proyecto1_201612218_ant/src/Interfaz/Dinamico.java</file>
+            <file>file:/C:/Users/pamel/OneDrive/Documentos/NetBeansProjects/OLC1_Proyecto1_201612218_ant/src/funciones/Statistics.java</file>
+            <file>file:/C:/Users/pamel/OneDrive/Documentos/NetBeansProjects/OLC1_Proyecto1_201612218_ant/src/Tokens/Token.java</file>
         </group>
     </open-files>
 </project-private>

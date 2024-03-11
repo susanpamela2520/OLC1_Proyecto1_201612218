@@ -1,1 +1,305 @@
+// ------------  Paquete e importaciones ------------
+package DATA_analisis;
+import funciones.*;
+
+import java_cup.runtime.*;
+import java.util.LinkedList;
+
+//------> Codigo para el parser
+//------> Declaracion de variables, funciones y funciones de error
+
+parser code 
+{:
+    public String resultado = ""; 
+
+    public void syntax_error(Symbol s)
+    {
+            System.err.println("Error Sintactico: no se espera "+ s.value + " - Fila: " + s.right + " - Columna: " + s.left + ". Recuperado" );
+       
+    }
+
+    public void unrecovered_syntax_error(Symbol s) 
+    {
+            System.err.println("Error Sintactico: "+ s.value + " - Fila: " + s.right + " - Columna: " + s.left + ". Sin recuperacion." );
+    }
+
+:}
+
+//-----------------------------------------> Codigo para las acciones gramaticales (no tocar) <------------------------------------------------//
+
+action code
+{:  :}
+
+//-----------------------------------------> Declaración terminales <------------------------------------------------//
+//SIMBOLO
+terminal String  PAR_DERECHO, PAR_IZQUIERDO, PUNTO_Y_COMA;
+
+//TIPO DE DATO
+terminal String NUMERO, STRCADENA, ID,DIGITO;
+terminal String COMA, IGUAL;
+
+//DECLARACION DE VARIABLES
+terminal String VAR, DOUBLEVAR, DOSPUNTOS, MENORQUE, END, GUION, PROGRAM, ENDPROGRAM, MAYORQUE; 
+terminal String VARIABLECHAR, COR_IZQUIERDO, COR_DERECHO, ARR, ARROBA;
+
+//OPERACION ARITMETICA
+terminal String SUMA, RESTA, MULTIPLICACION, DIVISION, MOD;
+//FUNCIONES StatisticsS
+terminal String MEDIA, MEDIANA, MODA, VARIANZA, MAX, MIN, PRINT, CONSOLE, COLUMN;
+
+//-----------------------------------------> Declaración de no terminales <------------------------------------------------//
+
+//INICIO
+non terminal inicio;
+//LISTAS DE ALMACENAMIENTO
+non terminal listainstr,  listaValoresDouble, listaValoresChar;
+//INSTRUCCIONES
+non terminal instruccion, expresionDouble, expresionChar, operaciones, funciones;
+non terminal printN, variable, valor, imp;
+
+
+
+//------> Definir Simbolo Inicial
+start with inicio; 
+
+
+// ------------>  INICIO
+
+inicio ::= PROGRAM listainstr ENDPROGRAM
+;
+listainstr ::= listainstr instruccion
+    | instruccion
+;
+
+instruccion ::= printN
+    | variable
+    |funciones
+    | error PUNTO_Y_COMA
+;
+
+
+//Para imprimir info en consola
+
+printN ::= CONSOLE DOSPUNTOS DOSPUNTOS PRINT IGUAL imp:val  END PUNTO_Y_COMA    {: funciones.Ejecucion.Print(val); :} 
+          |CONSOLE DOSPUNTOS DOSPUNTOS COLUMN IGUAL expresionChar:var GUION MAYORQUE expresionDouble:val  END PUNTO_Y_COMA    {: funciones.Ejecucion.PrintArr(val, var.toString()); :}
+          //|CONSOLE DOSPUNTOS DOSPUNTOS COLUMN IGUAL expresionChar:var GUION MAYORQUE COR_IZQUIERDO listaGeneral:val COR_DERECHO END PUNTO_Y_COMA    {: funciones.Ejecucion.PrintArr(val, var.toString()); :}
+         
+; 
+
+//Asignaciones de variales
+variable ::= VAR DOSPUNTOS DOUBLEVAR DOSPUNTOS DOSPUNTOS  ID:var MENORQUE GUION expresionDouble:val END PUNTO_Y_COMA     
+    {:funciones.Ejecucion.tablaVariables.put(var.toString(), val.toString());  :}
+    | VAR DOSPUNTOS VARIABLECHAR COR_IZQUIERDO COR_DERECHO DOSPUNTOS DOSPUNTOS ID:var MENORQUE GUION expresionChar:val END PUNTO_Y_COMA
+      {:funciones.Ejecucion.tablaVariables.put(var.toString(), val.toString()); :}
+    | ARR DOSPUNTOS DOUBLEVAR DOSPUNTOS DOSPUNTOS ARROBA:var MENORQUE GUION COR_IZQUIERDO listaValoresDouble:val COR_DERECHO END PUNTO_Y_COMA
+      {:funciones.Ejecucion.tablaVariables.put(var.toString(), (LinkedList<Double>)  val); funciones.Ejecucion.mostrarTablaVariables();:}
+    | ARR DOSPUNTOS DOUBLEVAR DOSPUNTOS DOSPUNTOS ARROBA:var MENORQUE GUION  expresionDouble:val END PUNTO_Y_COMA
+      {:funciones.Ejecucion.tablaVariables.put(var.toString(), (LinkedList<Double>)  val); funciones.Ejecucion.mostrarTablaVariables();:}
+    | ARR DOSPUNTOS VARIABLECHAR COR_IZQUIERDO COR_DERECHO DOSPUNTOS DOSPUNTOS ARROBA:var MENORQUE GUION COR_IZQUIERDO listaValoresChar:val COR_DERECHO END PUNTO_Y_COMA
+      {:funciones.Ejecucion.tablaVariables.put(var.toString(), (LinkedList<String>) val); funciones.Ejecucion.mostrarTablaVariables(); :}
+    | ARR DOSPUNTOS VARIABLECHAR COR_IZQUIERDO COR_DERECHO DOSPUNTOS DOSPUNTOS ARROBA:var MENORQUE GUION  expresionChar:val  END PUNTO_Y_COMA
+      {:funciones.Ejecucion.tablaVariables.put(var.toString(), (LinkedList<String>) val); funciones.Ejecucion.mostrarTablaVariables(); :}
+    | VAR DOSPUNTOS DOUBLEVAR DOSPUNTOS DOSPUNTOS ID:var MENORQUE GUION operaciones:val END PUNTO_Y_COMA
+      {:funciones.Ejecucion.tablaVariables.put(var.toString(), val.toString() ); funciones.Ejecucion.mostrarTablaVariables(); :}
+    | VAR DOSPUNTOS DOUBLEVAR DOSPUNTOS DOSPUNTOS ID:var MENORQUE GUION funciones:val END PUNTO_Y_COMA
+      {:funciones.Ejecucion.tablaVariables.put(var.toString(), val.toString() ); funciones.Ejecucion.mostrarTablaVariables(); :}
+;
+
+
+//funciones de Statistics
+
+funciones ::= MEDIA PAR_IZQUIERDO COR_IZQUIERDO listaValoresDouble:val COR_DERECHO PAR_DERECHO {: RESULT = funciones.Statistics.Media(val); :}
+            | MEDIANA PAR_IZQUIERDO COR_IZQUIERDO listaValoresDouble:val COR_DERECHO PAR_DERECHO {: RESULT = funciones.Statistics.Mediana(val); :}
+            | MODA PAR_IZQUIERDO COR_IZQUIERDO listaValoresDouble:val COR_DERECHO PAR_DERECHO {: RESULT = funciones.Statistics.Moda(val); :}
+            | VARIANZA PAR_IZQUIERDO COR_IZQUIERDO listaValoresDouble:val COR_DERECHO PAR_DERECHO {: RESULT = funciones.Statistics.Varianza(val); :}
+            | MAX PAR_IZQUIERDO COR_IZQUIERDO listaValoresDouble:val COR_DERECHO PAR_DERECHO {: RESULT = funciones.Statistics.Max(val); :}
+            | MIN PAR_IZQUIERDO COR_IZQUIERDO listaValoresDouble:val COR_DERECHO PAR_DERECHO {: RESULT = funciones.Statistics.Min(val); :}
+            |MEDIA PAR_IZQUIERDO  expresionDouble:val  PAR_DERECHO {: RESULT = funciones.Statistics.Media(val); :}
+            | MEDIANA PAR_IZQUIERDO  expresionDouble:val  PAR_DERECHO {: RESULT = funciones.Statistics.Mediana(val); :}
+            | MODA PAR_IZQUIERDO  expresionDouble:val  PAR_DERECHO {: RESULT = funciones.Statistics.Moda(val); :}
+            | VARIANZA PAR_IZQUIERDO  expresionDouble:val  PAR_DERECHO {: RESULT = funciones.Statistics.Varianza(val); :}
+            | MAX PAR_IZQUIERDO  expresionDouble:val  PAR_DERECHO {: RESULT = funciones.Statistics.Max(val); :}
+            | MIN PAR_IZQUIERDO  expresionDouble:val  PAR_DERECHO {: RESULT = funciones.Statistics.Min(val); :}
+;
+
+
+//Usado para el array de tipo double que admite operaciones y funciones
+listaValoresDouble ::=  expresionDouble:val COMA listaValoresDouble:resto
+               {:
+                   LinkedList<String> resultado = (LinkedList<String>) resto;
+                   resultado.addFirst(val.toString()); 
+                   RESULT = resultado;
+               :}
+    
+    | operaciones:val COMA listaValoresDouble:resto
+                {:
+                   LinkedList<String> resultado = (LinkedList<String>) resto;
+                   resultado.addFirst(val.toString()); 
+                   RESULT = resultado;
+               :}
+    | funciones:val COMA listaValoresDouble:resto
+                {:
+                   LinkedList<String> resultado = (LinkedList<String>) resto;
+                   resultado.addFirst(val.toString()); 
+                   RESULT = resultado;
+               :}
+
+    | expresionDouble:val
+               {:
+                   LinkedList<String> resultado = new LinkedList<String>();
+                   resultado.add(val.toString()); 
+                   RESULT = resultado;
+               :}
+    | operaciones:val                 {:
+                  LinkedList<String> resultado = new LinkedList<String>();
+                   resultado.add(val.toString()); 
+                   RESULT = resultado;
+               :}
+    | funciones:val
+                {:
+                  LinkedList<String> resultado = new LinkedList<String>();
+                   resultado.add(val.toString()); 
+                   RESULT = resultado;
+               :}
+;
+
+
+//Usado para las producciones de print
+
+
+//Usado para el array de tipo char
+
+listaValoresChar ::=   expresionChar:val COMA listaValoresChar:resto
+               {: 
+                   LinkedList<String> resultado = (LinkedList<String>) resto;
+                   resultado.addFirst(val.toString()); 
+                   RESULT = resultado;
+               :}
+    | expresionChar:val
+               {: 
+                   LinkedList<String> resultado = new LinkedList<String>();
+                   resultado.add(val.toString()); 
+                   RESULT = resultado;
+               :}
+;
+
+
+//No terminal de las expresiones funcionesizadas para la declaracion de variables de arryas de tipo double
+expresionDouble ::= NUMERO:val    {: RESULT = val.toString(); :}
+        |DIGITO:val       {: RESULT = val.toString(); :}
+        | ID:val            {: RESULT = funciones.Ejecucion.tablaVariables.get(val.toString()); :}
+        | ARROBA:val            {: RESULT = funciones.Ejecucion.tablaVariables.get(val); :}
+      
+        
+;
+
+
+//No terminal de las expresiones funcionesizadas para la declaracion de variables y arrays de tipo char
+expresionChar ::= STRCADENA:val        {: RESULT = val.toString(); :} 
+                | ID:val            {: RESULT = funciones.Ejecucion.tablaVariables.get(val.toString()); :}
+                | ARROBA:val            {: RESULT = funciones.Ejecucion.tablaVariables.get(val.toString()); :}
+            
+;
+
+
+//tiene las operaciones aritmeticas completas scon las anidaciones que pueden haber 
+
+operaciones ::=SUMA PAR_IZQUIERDO operaciones:val1 COMA operaciones:val2 PAR_DERECHO {: RESULT = funciones.Arithmetic.Suma(Double.parseDouble(val1.toString()) , Double.parseDouble(val2.toString()));:}
+            | RESTA PAR_IZQUIERDO operaciones:val1 COMA operaciones:val2 PAR_DERECHO {: RESULT = funciones.Arithmetic.Resta(Double.parseDouble(val1.toString()) , Double.parseDouble(val2.toString()));:}
+            | MULTIPLICACION PAR_IZQUIERDO operaciones:val1 COMA operaciones:val2 PAR_DERECHO {: RESULT = funciones.Arithmetic.Multiplicacion(Double.parseDouble(val1.toString()) , Double.parseDouble(val2.toString()));:}
+            | DIVISION PAR_IZQUIERDO operaciones:val1 COMA operaciones:val2 PAR_DERECHO {: RESULT = funciones.Arithmetic.Division(Double.parseDouble(val1.toString()) , Double.parseDouble(val2.toString()));:}
+            | MOD PAR_IZQUIERDO operaciones:val1 COMA operaciones:val2 PAR_DERECHO {: RESULT = funciones.Arithmetic.Modulo(Double.parseDouble(val1.toString()) , Double.parseDouble(val2.toString()));:}
+            |SUMA PAR_IZQUIERDO valor:val1 COMA operaciones:val2 PAR_DERECHO {: RESULT = funciones.Arithmetic.Suma(Double.parseDouble(val1.toString()) , Double.parseDouble(val2.toString()));:}
+            | RESTA PAR_IZQUIERDO valor:val1 COMA operaciones:val2 PAR_DERECHO {: RESULT = funciones.Arithmetic.Resta(Double.parseDouble(val1.toString()) , Double.parseDouble(val2.toString()));:}
+            | MULTIPLICACION PAR_IZQUIERDO valor:val1 COMA operaciones:val2 PAR_DERECHO {: RESULT = funciones.Arithmetic.Multiplicacion(Double.parseDouble(val1.toString()) , Double.parseDouble(val2.toString()));:}
+            | DIVISION PAR_IZQUIERDO valor:val1 COMA operaciones:val2 PAR_DERECHO {: RESULT = funciones.Arithmetic.Division(Double.parseDouble(val1.toString()) , Double.parseDouble(val2.toString()));:}
+            | MOD PAR_IZQUIERDO valor:val1 COMA operaciones:val2 PAR_DERECHO {: RESULT = funciones.Arithmetic.Modulo(Double.parseDouble(val1.toString()) , Double.parseDouble(val2.toString()));:}
+            |SUMA PAR_IZQUIERDO operaciones:val1 COMA valor:val2 PAR_DERECHO {: RESULT = funciones.Arithmetic.Suma(Double.parseDouble(val1.toString()) , Double.parseDouble(val2.toString()));:}
+            | RESTA PAR_IZQUIERDO operaciones:val1 COMA valor:val2 PAR_DERECHO {: RESULT = funciones.Arithmetic.Resta(Double.parseDouble(val1.toString()) , Double.parseDouble(val2.toString()));:}
+            | MULTIPLICACION PAR_IZQUIERDO operaciones:val1 COMA valor:val2 PAR_DERECHO {: RESULT = funciones.Arithmetic.Multiplicacion(Double.parseDouble(val1.toString()) , Double.parseDouble(val2.toString()));:}
+            | DIVISION PAR_IZQUIERDO operaciones:val1 COMA valor:val2 PAR_DERECHO {: RESULT = funciones.Arithmetic.Division(Double.parseDouble(val1.toString()) , Double.parseDouble(val2.toString()));:}
+            | MOD PAR_IZQUIERDO operaciones:val1 COMA valor:val2 PAR_DERECHO {: RESULT = funciones.Arithmetic.Modulo(Double.parseDouble(val1.toString()) , Double.parseDouble(val2.toString()));:}
+            |SUMA PAR_IZQUIERDO valor:val1 COMA valor:val2 PAR_DERECHO {: RESULT = funciones.Arithmetic.Suma(Double.parseDouble(val1.toString()) , Double.parseDouble(val2.toString()));:}
+            | RESTA PAR_IZQUIERDO valor:val1 COMA valor:val2 PAR_DERECHO {: RESULT = funciones.Arithmetic.Resta(Double.parseDouble(val1.toString()) , Double.parseDouble(val2.toString()));:}
+            | MULTIPLICACION PAR_IZQUIERDO valor:val1 COMA valor:val2 PAR_DERECHO {: RESULT = funciones.Arithmetic.Multiplicacion(Double.parseDouble(val1.toString()) , Double.parseDouble(val2.toString()));:}
+            | DIVISION PAR_IZQUIERDO valor:val1 COMA valor:val2 PAR_DERECHO {: RESULT = funciones.Arithmetic.Division(Double.parseDouble(val1.toString()) , Double.parseDouble(val2.toString()));:}
+            | MOD PAR_IZQUIERDO valor:val1 COMA valor:val2 PAR_DERECHO {: RESULT = funciones.Arithmetic.Modulo(Double.parseDouble(val1.toString()) , Double.parseDouble(val2.toString()));:}
+;
+
+
+//funcionesizado en las operaciones y funciones cuando solo se quieren datos simples sin anidar
+
+valor ::=NUMERO:val {: RESULT = val.toString(); :}
+        | ID: val {: RESULT = funciones.Ejecucion.tablaVariables.get(val); :}
+        |funciones:val {: RESULT = val.toString(); :}
+       
+;
+
+//Para la impresion de los datos simples
+
+imp ::= NUMERO:val COMA  imp:resto
+                {:
+                   LinkedList<String> resultado = (LinkedList<String>) resto;
+                   resultado.addFirst(val.toString()); 
+                   RESULT = resultado;
+               :}
+        |STRCADENA:val COMA imp:resto
+                {:
+                   LinkedList<String> resultado = (LinkedList<String>) resto;
+                   resultado.addFirst(val.toString()); 
+                   RESULT = resultado;
+               :}
+        | ID:val COMA imp:resto
+                {:
+                   LinkedList<String> resultado = (LinkedList<String>) resto;
+                   resultado.addFirst((String)funciones.Ejecucion.tablaVariables.get(val)); 
+                   RESULT = resultado;
+               :}
+
+        
+
+        |funciones:val COMA imp:resto
+               {:
+                   LinkedList<String> resultado = (LinkedList<String>) resto;
+                   resultado.addFirst(val.toString()); 
+                   RESULT = resultado;
+               :}
+        |operaciones:val COMA imp:resto
+               {:
+                   LinkedList<String> resultado = (LinkedList<String>) resto;
+                   resultado.addFirst(val.toString()); 
+                   RESULT = resultado;
+               :}
+
+        |NUMERO:val
+               {:
+                   LinkedList<String> resultado = new LinkedList<String>();
+                   resultado.add(val.toString()); 
+                   RESULT = resultado;
+               :}
+        |STRCADENA:val
+               {:
+                   LinkedList<String> resultado = new LinkedList<String>();
+                   resultado.add(val.toString()); 
+                   RESULT = resultado;
+               :}
+        | ID:val
+               {:
+                   LinkedList<String> resultado = new LinkedList<String>();
+                   resultado.add((String)funciones.Ejecucion.tablaVariables.get(val)); 
+                   RESULT = resultado;
+               :}
+        |funciones:val
+               {:
+                   LinkedList<String> resultado = new LinkedList<String>();
+                   resultado.add(val.toString()); 
+                   RESULT = resultado;
+               :}
+        |operaciones:val 
+               {:
+                   LinkedList<String> resultado = new LinkedList<String>();
+                   resultado.add(val.toString()); 
+                   RESULT = resultado;
+               :}
+;
 
